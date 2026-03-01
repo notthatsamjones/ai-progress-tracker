@@ -9,15 +9,50 @@
   <meta property="og:description" content="A log of AI tooling exploration and learning by @notthatsamjones">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://notthatsamjones.github.io/ai-progress-tracker/">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    // Apply saved theme before paint to prevent flash
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t !== 'light') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafafa;
+      --bg-card: #fff;
+      --text: #1a1a1a;
+      --text-secondary: #666;
+      --text-date: #888;
+      --border: #eaeaea;
+      --border-heading: #e5e5e5;
+      --text-heading: #333;
+      --text-footer: #999;
+    }
+
+    [data-theme="dark"] {
+      --bg: #161616;
+      --bg-card: #1e1e1e;
+      --text: #e0e0e0;
+      --text-secondary: #999;
+      --text-date: #777;
+      --border: #2a2a2a;
+      --border-heading: #333;
+      --text-heading: #ccc;
+      --text-footer: #666;
+    }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.6;
-      color: #1a1a1a;
-      background: #fafafa;
+      color: var(--text);
+      background: var(--bg);
       padding: 2rem 1rem;
+      transition: background 0.2s, color 0.2s;
     }
 
     .container {
@@ -27,6 +62,13 @@
 
     header {
       margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    header div {
+      flex: 1;
     }
 
     header h1 {
@@ -37,9 +79,33 @@
     }
 
     header p {
-      color: #666;
+      color: var(--text-secondary);
       font-size: 0.95rem;
     }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.5rem;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      color: var(--text);
+      flex-shrink: 0;
+      margin-top: 0.3rem;
+      transition: border-color 0.2s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--text-date);
+    }
+
+    /* Sun shown in dark mode, moon shown in light mode */
+    .icon-sun { display: none; }
+    .icon-moon { display: inline; }
+    [data-theme="dark"] .icon-sun { display: inline; }
+    [data-theme="dark"] .icon-moon { display: none; }
 
     .year-section {
       margin-bottom: 2.5rem;
@@ -48,8 +114,8 @@
     .year-heading {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #333;
-      border-bottom: 2px solid #e5e5e5;
+      color: var(--text-heading);
+      border-bottom: 2px solid var(--border-heading);
       padding-bottom: 0.5rem;
       margin-bottom: 1.25rem;
     }
@@ -57,16 +123,17 @@
     .entry {
       margin-bottom: 1rem;
       padding: 0.75rem 1rem;
-      background: #fff;
-      border: 1px solid #eaeaea;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 6px;
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .entry-date {
       display: block;
       font-size: 0.8rem;
       font-weight: 600;
-      color: #888;
+      color: var(--text-date);
       text-transform: uppercase;
       letter-spacing: 0.04em;
       margin-bottom: 0.25rem;
@@ -74,7 +141,7 @@
 
     .entry-text {
       font-size: 0.95rem;
-      color: #1a1a1a;
+      color: var(--text);
     }
 
     .tag {
@@ -114,20 +181,31 @@
     .tag-designsystem { background: #f9a8d4; color: #701a75; }
     .tag-prototyping { background: #99f6e4; color: #115e59; }
 
+    /* Dark mode tag adjustments - lower opacity to avoid glare */
+    [data-theme="dark"] .tag {
+      filter: brightness(0.8) saturate(0.85);
+    }
+
     footer {
       margin-top: 3rem;
       padding-top: 1rem;
-      border-top: 1px solid #e5e5e5;
+      border-top: 1px solid var(--border-heading);
       font-size: 0.8rem;
-      color: #999;
+      color: var(--text-footer);
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>AI Progress Tracker</h1>
-      <p>A log of AI tooling exploration and learning by @notthatsamjones</p>
+      <div>
+        <h1>AI Progress Tracker</h1>
+        <p>A log of AI tooling exploration and learning by @notthatsamjones</p>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span class="icon-moon">&#9789;</span>
+        <span class="icon-sun">&#9788;</span>
+      </button>
     </header>
     <main>
     <div class="year-section">
@@ -142,11 +220,11 @@
       </div>
       <div class="entry">
         <span class="entry-date">Feb-18</span>
-        <span class="entry-text">Deployed hackathon brief with trade-specific callback analysis and 5 user profiles to Vercel behind a password-protected cover page<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
+        <span class="entry-text">Deployed hackathon brief (including detailed user personas) to Vercel behind a password-protected cover page<span class="tag tag-engcollab">EngCollab</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Feb-11</span>
-        <span class="entry-text">Installed and configured OpenAI Codex CLI for AI-powered coding workflows<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Installed and configured OpenAI Codex CLI for AI-powered coding workflows<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Feb-09</span>
@@ -154,15 +232,15 @@
       </div>
       <div class="entry">
         <span class="entry-date">Feb-06</span>
-        <span class="entry-text">Prototyped front-end UI from Figma design using Claude Opus 4.6 with live preview in Chrome<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
+        <span class="entry-text">Prototyped front-end UI from Figma design using Claude Opus 4.6 with live preview in Chrome<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Feb-05</span>
-        <span class="entry-text">Tested Sonnet 4.5 with Opus 4.5 reviewer pipeline in Droid for automated market research<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Tested Sonnet 4.5 with Opus 4.5 reviewer pipeline in Droid for automated market research<span class="tag tag-research">Research</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Feb-05</span>
-        <span class="entry-text">Installed Factory Droid CLI to orchestrate large-context research queries across multiple sources<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Installed Factory Droid CLI to orchestrate large-context research queries across multiple sources<span class="tag tag-research">Research</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Feb-03</span>
@@ -206,11 +284,11 @@
       </div>
       <div class="entry">
         <span class="entry-date">Jan-05</span>
-        <span class="entry-text">Configured automated Obsidian vault backup via Github CLI with Claude guidance.<span class="tag tag-automation">Automation</span></span>
+        <span class="entry-text">Configured automated Obsidian vault backup via Github CLI with Claude guidance.<span class="tag tag-ai-tools">AI-Tools</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Jan-05</span>
-        <span class="entry-text">Analyzed 700+ LinkedIn connections using Claude in Browser to identify contacts meeting specific criteria unavailable through native search.<span class="tag tag-ai-browser">AI-Browser</span></span>
+        <span class="entry-text">Analyzed 700+ LinkedIn connections using Claude in Browser to identify contacts meeting specific criteria unavailable through native search.<span class="tag tag-research">Research</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Jan-04</span>
@@ -221,7 +299,7 @@
       <h2 class="year-heading">2025</h2>
       <div class="entry">
         <span class="entry-date">Dec-24</span>
-        <span class="entry-text">Evaluated Whoop's AI coaching feature as a reference for conversational AI design<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Evaluated Whoop's AI coaching feature as a reference for conversational AI design<span class="tag tag-evaluation">Evaluation</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Dec-18</span>
@@ -229,11 +307,11 @@
       </div>
       <div class="entry">
         <span class="entry-date">Dec-17</span>
-        <span class="entry-text">Prototyped notification and dashboard card UIs in Figma Make.<span class="tag tag-prototype">Prototype</span></span>
+        <span class="entry-text">Prototyped notification and dashboard card UIs in Figma Make.<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Dec-11</span>
-        <span class="entry-text">Created rapid-pace project update videos for stakeholders using Descript AI editing<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Created rapid-pace project update videos for stakeholders using Descript AI editing<span class="tag tag-engcollab">EngCollab</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Dec-05</span>
@@ -245,7 +323,7 @@
       </div>
       <div class="entry">
         <span class="entry-date">Nov-23</span>
-        <span class="entry-text">Designed ASCII wireframes for three-tier dashboard architecture using Claude Code<span class="tag tag-design">Design</span></span>
+        <span class="entry-text">Designed ASCII wireframes for three-tier dashboard architecture using Claude Code<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Nov-21</span>
@@ -257,7 +335,7 @@
       </div>
       <div class="entry">
         <span class="entry-date">Nov-12</span>
-        <span class="entry-text">Analyzed 10+ meeting transcripts with Claude Code to define two customer segments with distinct needs and onboarding journeys<span class="tag tag-synthesis">Synthesis</span></span>
+        <span class="entry-text">Analyzed 10+ meeting transcripts with Claude Code to define two customer segments with distinct needs and onboarding journeys<span class="tag tag-analysis">Analysis</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Nov-05</span>
@@ -265,11 +343,11 @@
       </div>
       <div class="entry">
         <span class="entry-date">Oct-08</span>
-        <span class="entry-text">Generated realistic user avatars and in-field images for home services prototyping using Midjourney<span class="tag tag-imagegen">ImageGen</span></span>
+        <span class="entry-text">Generated realistic user avatars and in-field images for home services prototyping using Midjourney<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Oct-02</span>
-        <span class="entry-text">Built digital garden with Figma Make as part of Elizabeth Lin's workshop w/ The Design Kids<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
+        <span class="entry-text">Built digital garden with Figma Make as part of Elizabeth Lin's workshop w/ The Design Kids<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Oct-02</span>
@@ -277,19 +355,19 @@
       </div>
       <div class="entry">
         <span class="entry-date">Sep-29</span>
-        <span class="entry-text">Created component library for prototyping using Magic Patterns<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Created component library for prototyping using Magic Patterns<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Sep-25</span>
-        <span class="entry-text">Created interview snapshots from user interview transcripts using Claude Code<span class="tag tag-synthesis">Synthesis</span></span>
+        <span class="entry-text">Created interview snapshots from user interview transcripts using Claude Code<span class="tag tag-analysis">Analysis</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Sep-25</span>
-        <span class="entry-text">Used Cursor on cloned Github repo to visualize data model and understand tech stack of existing application <span class="tag tag-architect">Architect</span></span>
+        <span class="entry-text">Used Cursor on cloned Github repo to visualize data model and understand tech stack of existing application <span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Sep-23</span>
-        <span class="entry-text">Built local kids activities web scraper in Cursor and matched activities to preferences for 20 beta testers<span class="tag tag-sideproject">SideProject</span></span>
+        <span class="entry-text">Built local kids activities web scraper in Cursor and matched activities to preferences for 20 beta testers<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Sep-20</span>
@@ -309,19 +387,19 @@
       </div>
       <div class="entry">
         <span class="entry-date">Aug-28</span>
-        <span class="entry-text">Analyzed executive's YouTube presence using Claude and ChatGPT to create a style-and-tone prompt<span class="tag tag-contexteng">ContextEng</span></span>
+        <span class="entry-text">Analyzed executive's YouTube presence using Claude and ChatGPT to create a style-and-tone prompt<span class="tag tag-analysis">Analysis</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Aug-28</span>
-        <span class="entry-text">Expanded design system color ramp using ChatGPT for hex code recommendations<span class="tag tag-ai-tools">AI-Tools</span></span>
+        <span class="entry-text">Expanded design system color ramp using ChatGPT for hex code recommendations<span class="tag tag-engcollab">EngCollab</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Aug-28</span>
-        <span class="entry-text">Iteratively generated database schema for side project using ChatGPT<span class="tag tag-ai-assisteddev">AI-AssistedDev</span></span>
+        <span class="entry-text">Iteratively generated database schema for side project using ChatGPT<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Aug-25</span>
-        <span class="entry-text">Beta-tested &quot;Vibe Code Production-Ready Side Projects&quot; course with Colin Matthews<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
+        <span class="entry-text">Vibe Code Production-Ready Side Projects course with Colin Matthews<span class="tag tag-ai-assistedcoding">AI-AssistedCoding</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Jul-31</span>
@@ -329,7 +407,7 @@
       </div>
       <div class="entry">
         <span class="entry-date">Jul-15</span>
-        <span class="entry-text">Worked with engineer to define voice AI performance metrics and Datadog LLM Observability<span class="tag tag-monitoring">Monitoring</span></span>
+        <span class="entry-text">Worked with engineer to define voice AI performance metrics and Datadog LLM Observability<span class="tag tag-engcollab">EngCollab</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Jul-09</span>
@@ -337,7 +415,7 @@
       </div>
       <div class="entry">
         <span class="entry-date">Jul-08</span>
-        <span class="entry-text">Consolidated research notes using FigJam AI Jambot and Dovetail AI features<span class="tag tag-synthesis">Synthesis</span></span>
+        <span class="entry-text">Consolidated research notes using FigJam AI Jambot and Dovetail AI features<span class="tag tag-analysis">Analysis</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Jun-15</span>
@@ -345,11 +423,11 @@
       </div>
       <div class="entry">
         <span class="entry-date">Jun-09</span>
-        <span class="entry-text">Participated in Memorizely's first &quot;AI Product Design&quot; cohort<span class="tag tag-learning">Learning</span></span>
+        <span class="entry-text">Participated in Memorizely's first &quot;AI Product Design&quot; cohort<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Jun-07</span>
-        <span class="entry-text">Created typography scale and recommended typographic adjustments using ChatGPT<span class="tag tag-designsystem">DesignSystem</span></span>
+        <span class="entry-text">Created typography scale and recommended typographic adjustments using ChatGPT<span class="tag tag-engcollab">EngCollab</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">May-16</span>
@@ -365,11 +443,11 @@
       </div>
       <div class="entry">
         <span class="entry-date">Feb-23</span>
-        <span class="entry-text">&quot;Prototyping with Cursor&quot; workshop with designisaparty.com's Elizabeth Lin<span class="tag tag-prototyping">Prototyping</span></span>
+        <span class="entry-text">&quot;Prototyping with Cursor&quot; workshop with designisaparty.com's Elizabeth Lin<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
       <div class="entry">
         <span class="entry-date">Feb-03</span>
-        <span class="entry-text">Prototyped AI Customer Service Partner in &quot;Designing Interfaces for Connection&quot; with designisaparty.com's Elizabeth Lin<span class="tag tag-prototyping">Prototyping</span></span>
+        <span class="entry-text">Prototyped AI Customer Service Partner in &quot;Designing Interfaces for Connection&quot; with designisaparty.com's Elizabeth Lin<span class="tag tag-ai-prototyping">AI-Prototyping</span></span>
       </div>
     </div>
     </main>
@@ -377,5 +455,17 @@
       Last updated March 01, 2026
     </footer>
   </div>
+  <script>
+    function toggleTheme() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+  </script>
 </body>
 </html>
